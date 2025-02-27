@@ -1,5 +1,5 @@
 'use client'
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
@@ -8,27 +8,67 @@ import { ArrowRight, Heart, Activity, Shield, Award, Clock, CheckCircle } from '
 import { useRouter } from 'next/navigation';
 const PregnancyLandingPage = () => {
   const router = useRouter();
+  const [user, setUser] = useState<{ fullName: string } | null>(null);
+
+  useEffect(() => {
+    // Check if user is logged in
+    const storedUser = localStorage.getItem("user");
+    if (storedUser) {
+      setUser(JSON.parse(storedUser));
+    }
+  }, []);
+
+  const handleLogout = () => {
+    localStorage.removeItem("user");
+    setUser(null);
+    router.push("/");
+  };
   return (
     <div className="min-h-screen flex flex-col">
       {/* Navigation */}
       <header className="sticky top-0 z-40 border-b bg-white backdrop-blur">
-        <div className="container flex h-16 items-center justify-between">
-          <div className="flex items-center">
-            <Heart className="h-8 w-8 text-pink-500" />
-            <span className="ml-2 text-2xl font-bold bg-gradient-to-r from-pink-500 to-blue-500 text-transparent bg-clip-text">MaternaHealth</span>
-          </div>
-          <nav className="hidden md:flex items-center space-x-6">
-            <a href="#" className="text-gray-700 hover:text-blue-600 transition-colors">Home</a>
-            <a href="#features" className="text-gray-700 hover:text-blue-600 transition-colors">Features</a>
-            <a href="#how-it-works" className="text-gray-700 hover:text-blue-600 transition-colors">How It Works</a>
-            <a href="#faq" className="text-gray-700 hover:text-blue-600 transition-colors">FAQ</a>
-            <Button>Get Started</Button>
-          </nav>
-          <Button variant="ghost" size="icon" className="md:hidden">
-            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="4" x2="20" y1="12" y2="12" /><line x1="4" x2="20" y1="6" y2="6" /><line x1="4" x2="20" y1="18" y2="18" /></svg>
-          </Button>
+      <div className="container flex h-16 items-center justify-between">
+        <div className="flex items-center">
+          <Heart className="h-8 w-8 text-pink-500" />
+          <span className="ml-2 text-2xl font-bold bg-gradient-to-r from-pink-500 to-blue-500 text-transparent bg-clip-text">
+            MaternaHealth
+          </span>
         </div>
-      </header>
+        <nav className="hidden md:flex items-center space-x-6">
+          <a href="#" className="text-gray-700 hover:text-blue-600 transition-colors">Home</a>
+          <a href="#features" className="text-gray-700 hover:text-blue-600 transition-colors">Features</a>
+          <a href="#how-it-works" className="text-gray-700 hover:text-blue-600 transition-colors">How It Works</a>
+          <a href="#faq" className="text-gray-700 hover:text-blue-600 transition-colors">FAQ</a>
+
+          {/* Conditional Rendering */}
+          {user ? (
+            <div className="flex items-center space-x-4">
+              <span className="font-medium text-gray-700">Welcome, {user.fullName}</span>
+              <Button variant="outline" onClick={handleLogout}>Logout</Button>
+            </div>
+          ) : (
+            <Button onClick={() => router.push("/auth/Signup")}>Get Started</Button>
+          )}
+        </nav>
+        <Button variant="ghost" size="icon" className="md:hidden">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="24"
+            height="24"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="2"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+          >
+            <line x1="4" x2="20" y1="12" y2="12" />
+            <line x1="4" x2="20" y1="6" y2="6" />
+            <line x1="4" x2="20" y1="18" y2="18" />
+          </svg>
+        </Button>
+      </div>
+    </header>
 
       {/* Hero Section */}
       <section className="relative pt-16 pb-32 bg-gradient-to-b from-blue-50 to-white">
